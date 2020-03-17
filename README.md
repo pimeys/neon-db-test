@@ -1,3 +1,8 @@
 # neon-db-test
 
-Test app
+To run:
+
+``` sh
+> npm install
+> node -e 'require("./")'
+```
