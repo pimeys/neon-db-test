@@ -43,8 +43,8 @@ declare_types! {
                 let res = conn.query_raw("SELECT 1", &[]).await.unwrap();
 
                 cb.schedule(move |cx| {
-                    let result = res.into_single().unwrap()[0].as_f64().unwrap();
-                    vec![cx.number(result)]
+                    let result = res.into_single().unwrap()[0].as_i64().unwrap();
+                    vec![cx.number(result as f64)]
                 });
 
                 result
