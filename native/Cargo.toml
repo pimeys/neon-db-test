@@ -1,0 +1,21 @@
+[package]
+name = "neon-db-test"
+version = "0.1.0"
+authors = ["Julius de Bruijn <bruijn@prisma.io>"]
+license = "MIT"
+build = "build.rs"
+edition = "2018"
+exclude = ["artifacts.json", "index.node"]
+
+[lib]
+name = "neon_hello"
+crate-type = ["cdylib"]
+
+[build-dependencies]
+neon-build = "0.4.0"
+
+[dependencies]
+neon = { version = "0.4.0", features = ["event-handler-api"] }
+quaint = { version = "0.2.0-alpha.9", features = ["full"] }
+tokio = { version = "0.2", features = ["rt-threaded"] }
+anyhow = "1"
