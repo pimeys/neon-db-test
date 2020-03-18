@@ -6,9 +6,11 @@
   "author": "Julius de Bruijn <bruijn@prisma.io>",
   "license": "MIT",
   "dependencies": {
-    "neon-cli": "^0.4.0"
+    "neon-cli": "^0.4.0",
+    "express": "^4.17.1"
   },
   "scripts": {
-    "install": "neon build"
+    "install": "neon build",
+    "server": "node lib/index.js"
   }
 }

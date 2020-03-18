@@ -4,5 +4,10 @@ To run:
 
 ``` sh
 > npm install
-> node -e 'require("./")'
+> npm run server
 ```
+
+``` sh
+> curl localhost:3000/users
+```
+
