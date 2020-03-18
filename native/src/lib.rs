@@ -116,20 +116,14 @@ declare_types! {
                     for (i, user) in users.into_iter().enumerate() {
                         let obj = JsObject::new(cx);
 
-                        {
-                            let id = cx.number(user.id as f64);
-                            obj.set(cx, "id", id).unwrap();
-                        }
+                        let id = cx.number(user.id as f64);
+                        obj.set(cx, "id", id).unwrap();
 
-                        {
-                            let name = cx.string(user.name);
-                            obj.set(cx, "name", name).unwrap();
-                        }
+                        let name = cx.string(user.name);
+                        obj.set(cx, "name", name).unwrap();
 
-                        {
-                            let age = cx.number(user.age as f64);
-                            obj.set(cx, "age", age).unwrap();
-                        }
+                        let age = cx.number(user.age as f64);
+                        obj.set(cx, "age", age).unwrap();
 
                         ary.set(cx, i as u32, obj).unwrap();
                     }
