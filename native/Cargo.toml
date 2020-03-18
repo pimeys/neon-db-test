@@ -19,4 +19,6 @@ neon = { version = "0.4.0", features = ["event-handler-api"] }
 quaint = { version = "0.2.0-alpha.9", features = ["full", "serde-support"] }
 tokio = { version = "0.2", features = ["rt-threaded"] }
 serde = { version = "1.0", features = ["std", "serde_derive"] }
+
 anyhow = "1"
+neon-serde = { git = "https://github.com/poljar/neon-serde/", branch = "bump-neon-deps" }

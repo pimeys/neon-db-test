@@ -287,6 +287,16 @@ dependencies = [
 ]
 
 [[package]]
+name = "error-chain"
+version = "0.12.2"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "d371106cc88ffdfb1eabd7111e432da544f16f3e2d7bf1dfe8bf575f1df045cd"
+dependencies = [
+ "backtrace",
+ "version_check",
+]
+
+[[package]]
 name = "failure"
 version = "0.1.7"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -886,6 +896,7 @@ dependencies = [
  "anyhow",
  "neon",
  "neon-build",
+ "neon-serde",
  "quaint",
  "serde",
  "tokio",
@@ -899,6 +910,18 @@ checksum = "2beea093a60c08463f65e1da4cda68149986f60d8d2177489b44589463c782a6"
 dependencies = [
  "cfg-if",
  "neon-sys",
+]
+
+[[package]]
+name = "neon-serde"
+version = "0.3.0"
+source = "git+https://github.com/poljar/neon-serde/?branch=bump-neon-deps#2ac1fe8f7d8024f08aed99a50b3741fca5ab82e9"
+dependencies = [
+ "error-chain",
+ "neon",
+ "neon-runtime",
+ "num",
+ "serde",
 ]
 
 [[package]]
@@ -1788,6 +1811,12 @@ name = "vcpkg"
 version = "0.2.8"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "3fc439f2794e98976c88a2a2dafce96b930fe8010b0a256b3c2199a773933168"
+
+[[package]]
+name = "version_check"
+version = "0.9.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "078775d0255232fb988e6fccf26ddc9d1ac274299aaedcedce21c6f72cc533ce"
 
 [[package]]
 name = "wasi"
