@@ -16,6 +16,26 @@ pub struct User {
     age: u16,
 }
 
+impl User {
+    pub fn into_object<'a, C>(self, cx: &mut C) -> JsResult<'a, JsObject>
+    where
+        C: Context<'a>,
+    {
+        let obj = JsObject::new(cx);
+
+        let id = cx.number(self.id as f64);
+        obj.set(cx, "id", id)?;
+
+        let name = cx.string(self.name);
+        obj.set(cx, "name", name)?;
+
+        let age = cx.number(self.age as f64);
+        obj.set(cx, "age", age)?;
+
+        Ok(obj)
+    }
+}
+
 pub struct InnerClient {
     pool: Quaint,
 }
@@ -114,17 +134,7 @@ declare_types! {
                     let ary = JsArray::new(cx, 2u32);
 
                     for (i, user) in users.into_iter().enumerate() {
-                        let obj = JsObject::new(cx);
-
-                        let id = cx.number(user.id as f64);
-                        obj.set(cx, "id", id).unwrap();
-
-                        let name = cx.string(user.name);
-                        obj.set(cx, "name", name).unwrap();
-
-                        let age = cx.number(user.age as f64);
-                        obj.set(cx, "age", age).unwrap();
-
+                        let obj = user.into_object(cx).unwrap();
                         ary.set(cx, i as u32, obj).unwrap();
                     }
 
