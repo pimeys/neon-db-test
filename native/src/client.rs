@@ -29,4 +29,10 @@ impl InnerClient {
         let rows = conn.select(Select::from_table("user")).await?;
         Ok(quaint::serde::from_rows(rows)?)
     }
+
+    pub async fn big_users(&self) -> anyhow::Result<Vec<User>> {
+        let conn = self.pool.check_out().await?;
+        let rows = conn.select(Select::from_table("user2")).await?;
+        Ok(quaint::serde::from_rows(rows)?)
+    }
 }

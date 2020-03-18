@@ -85,6 +85,35 @@ declare_types! {
 
             Ok(cx.undefined().upcast())
         }
+
+        method big(mut cx) {
+            let this = cx.this();
+            let func = cx.argument::<JsFunction>(0)?;
+
+            let (inner, runtime) = {
+                let guard = cx.lock();
+                let client = this.borrow(&guard);
+
+                (client.inner.clone(), client.runtime.clone())
+            };
+
+            let cb = EventHandler::new(&cx, this, func);
+
+            runtime.spawn(async move {
+                let result: anyhow::Result<()> = Ok(());
+                let users = inner.big_users().await?;
+
+                cb.schedule(move |cx| {
+                    let ary = neon_serde::to_value(cx, &users).unwrap();
+
+                    vec![ary]
+                });
+
+                result
+            });
+
+            Ok(cx.undefined().upcast())
+        }
     }
 }
 
