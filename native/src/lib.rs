@@ -1,3 +1,6 @@
+#[macro_use]
+extern crate serde;
+
 use neon::prelude::*;
 use quaint::{pooled::Quaint, prelude::*};
 use std::{
@@ -5,6 +8,13 @@ use std::{
     sync::Arc,
 };
 use tokio::runtime::Runtime;
+
+#[derive(Debug, Serialize, Deserialize)]
+pub struct User {
+    id: usize,
+    name: String,
+    age: u16,
+}
 
 pub struct InnerClient {
     pool: Quaint,
@@ -26,6 +36,12 @@ impl InnerClient {
 
         val.as_i64()
             .ok_or(Error::new(ErrorKind::InvalidData, "Not an integer.").into())
+    }
+
+    pub async fn users(&self) -> anyhow::Result<Vec<User>> {
+        let conn = self.pool.check_out().await?;
+        let rows = conn.select(Select::from_table("user")).await?;
+        Ok(quaint::serde::from_rows(rows)?)
     }
 }
 
@@ -69,6 +85,56 @@ declare_types! {
 
                 cb.schedule(move |cx| {
                     vec![cx.number(num as f64)]
+                });
+
+                result
+            });
+
+            Ok(cx.undefined().upcast())
+        }
+
+        method users(mut cx) {
+            let this = cx.this();
+            let func = cx.argument::<JsFunction>(0)?;
+
+            let (inner, runtime) = {
+                let guard = cx.lock();
+                let client = this.borrow(&guard);
+
+                (client.inner.clone(), client.runtime.clone())
+            };
+
+            let cb = EventHandler::new(&cx, this, func);
+
+            runtime.spawn(async move {
+                let result: anyhow::Result<()> = Ok(());
+                let users = inner.users().await?;
+
+                cb.schedule(move |cx| {
+                    let ary = JsArray::new(cx, 2u32);
+
+                    for (i, user) in users.into_iter().enumerate() {
+                        let obj = JsObject::new(cx);
+
+                        {
+                            let id = cx.number(user.id as f64);
+                            obj.set(cx, "id", id).unwrap();
+                        }
+
+                        {
+                            let name = cx.string(user.name);
+                            obj.set(cx, "name", name).unwrap();
+                        }
+
+                        {
+                            let age = cx.number(user.age as f64);
+                            obj.set(cx, "age", age).unwrap();
+                        }
+
+                        ary.set(cx, i as u32, obj).unwrap();
+                    }
+
+                    vec![ary]
                 });
 
                 result
