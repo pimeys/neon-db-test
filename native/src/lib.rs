@@ -1,49 +1,13 @@
 #[macro_use]
 extern crate serde;
 
+pub mod client;
+pub mod user;
+
+use client::InnerClient;
 use neon::prelude::*;
-use quaint::{pooled::Quaint, prelude::*};
-use std::{
-    io::{Error, ErrorKind},
-    sync::Arc,
-};
+use std::sync::Arc;
 use tokio::runtime::Runtime;
-
-#[derive(Debug, Serialize, Deserialize)]
-pub struct User {
-    id: usize,
-    name: String,
-    age: u16,
-}
-
-pub struct InnerClient {
-    pool: Quaint,
-}
-
-impl InnerClient {
-    pub async fn new(url: &str) -> anyhow::Result<Self> {
-        Ok(Self {
-            pool: Quaint::new(url).await?,
-        })
-    }
-
-    pub async fn select_1(&self) -> anyhow::Result<i64> {
-        let conn = self.pool.check_out().await?;
-        let res = conn.query_raw("SELECT 1", &[]).await?;
-
-        let row = res.into_single()?;
-        let val = row.into_single()?;
-
-        val.as_i64()
-            .ok_or(Error::new(ErrorKind::InvalidData, "Not an integer.").into())
-    }
-
-    pub async fn users(&self) -> anyhow::Result<Vec<User>> {
-        let conn = self.pool.check_out().await?;
-        let rows = conn.select(Select::from_table("user")).await?;
-        Ok(quaint::serde::from_rows(rows)?)
-    }
-}
 
 pub struct Client {
     inner: Arc<InnerClient>,

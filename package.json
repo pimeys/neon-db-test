@@ -7,7 +7,8 @@
   "license": "MIT",
   "dependencies": {
     "neon-cli": "^0.4.0",
-    "express": "^4.17.1"
+    "fastify": "^2.12.1",
+    "bent": "^7.1.1"
   },
   "scripts": {
     "install": "neon build",
